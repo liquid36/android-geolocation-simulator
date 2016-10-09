@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  h1= "Generador de palabras artistico"
+  p#letras    
+
+
+  script.
+    var letras = document.getElementById("letras"); 
+    var time = #{diff};
+    console.log(time);
+    letras.innerHTML = generarPalabra(time);
+
+    function ciclar() {
+      setTimeout(function () {
+        time += 1;
+        letras.innerHTML = generarPalabra(time);
+        ciclar();
+      }, 1000);
+    }
+    ciclar();
+
+    function generarPalabra(time) {
+        var alfabeto = 'abcdefghijklmnñopqrstuvwxyz';
+        var palabra = ""; 
+        var t = time; 
+        while ( t >  0) {
+           var resto = t % 27;
+
+           palabra =  alfabeto.charAt(resto) + palabra;
+
+           t = Math.floor(t / 27);
+
+        }         
+
+        return palabra;
+
+    }
