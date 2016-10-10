@@ -1,8 +1,65 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-a {
-  color: #00B7FF;
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.navbar{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 56px;
+  background-color: rgba(0,0,200,0.9);
+  z-index: 1;
+  color: white;
+}
+
+.navbar .nav-left {
+  display: inline-block;
+  height: 100%;
+  padding: 15px;
+}
+
+.navbar .nav-right { 
+  padding: 15px;
+  height: 100%;
+  float: right;
+}
+
+.navbar h1 {
+  color: white;
+  margin: 0 auto;
+}
+
+.btn {
+  background-color: white;
+  border:none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  width: 120px;
+}
+
+.btn:hover {
+  background-color: #CCC;
+}
+
+.btn:active {
+  background-color: #999;
+}
+
+.actions-nav {
+  position: fixed;
+  z-index: 1;
+  right: 0px;
+  bottom: 15px;
+
 }

@@ -1,56 +1,179 @@
 <html>
     <head>
         <title>Android geolocation simulator</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
-        <style>
-
-            html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-
-            #map {
-                width: 100%;
-                height: 100%;
-            }
-
-        </style>
+        <link rel="stylesheet" href="stylesheets/style.css" />
     </head>
     <body>
+        <nav class="navbar">
+            <div class="nav-left">
+                <h1>
+                    Android Geolocation Simulator
+                </h1>
+            </div>  
+            <div class="nav-right">
+                <button class="btn" id="btnMode">
+                    SIMPLE MODE
+                </button>    
+            </div>          
+        </nav>
         <div id="map"></div>
+        <div class="actions-nav" style="display:none;">
+            <button class="btn" id="btnPlay">
+                <i class="material-icons">&#xE037;</i>
+            </button> 
+            <button class="btn" id="btnClear">
+                <i class="material-icons">&#xE14C;</i>
+            </button> 
+        </div>
         <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
         <script src="jquery.min.js"></script>
+        <script src="geolocation-simulator.js"></script>
         <script>
+            var marker = null, 
+                mymap = null, 
+                mode = 0,
+                polyline = null,
+                polyMarkers = [],
+                redIcon = L.icon({iconUrl: 'img/red-marker.png',iconAnchor:[10,31]});
+
+
+
+
+            function setPosition(lat,lng) {
+                if (!marker) {
+                    marker = L.marker([lat, lng]).addTo(mymap);
+                }
+                var newLatLng = new L.LatLng(lat, lng);
+                marker.setLatLng(newLatLng); 
+            }
+
             function init () {
-                var mymap = L.map('map').setView([-32.960533, -60.680061], 13);
+                mymap = L.map('map').setView([-32.960533, -60.680061], 13);
                 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
                     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 }).addTo(mymap); 
-
-                mymap.on('click', function (e) {
-                   console.log(e.latlng);
-                   var data = {
-                        lat : e.latlng.lat,
-                        lng : e.latlng.lng
-                    };
-                    console.log(data);
-                    $.ajax({
-                        url: "/send",
-                        type: "POST",
-                        dataType:'json',
-                        data: data,
-                        success: function(data){
-                            console.log(data);
-                        }
-                    });
-                });
-                
-
+                polyline = L.polyline([], {color: 'red'}).addTo(mymap);
+                mymap.on('click', mapClick);
             }
+
+            function mapClick(e) {
+                switch (mode) {
+                    case 0:
+                        setPosition(e.latlng.lat,e.latlng.lng);
+                        sendLocation(e.latlng.lat,e.latlng.lng);
+                        break;
+                    case 1:
+                        var m = L.marker(e.latlng,{icon:redIcon}).addTo(mymap);
+                        polyMarkers.push(m);
+                        polyline.addLatLng(e.latlng);
+                        if (polyline.getLatLngs().length > 1) {
+                            $(".actions-nav").show();
+                        }
+                        break;    
+                }            
+            }
+
+            function sendLocation(lat,lng) {
+                var data = {
+                    lat : lat,
+                    lng : lng
+                }; 
+                $.ajax({
+                    url: "/send",
+                    type: "POST",
+                    dataType:'json',
+                    data: data,
+                    success: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+
+            function clear() {
+                polyline.setLatLngs([]);
+                $(".actions-nav").hide();
+                if (simulation) {
+                    simulation.stop();
+                    clearTimeout(_timer);
+                }
+                for(i=0;i<polyMarkers.length;i++) {
+                    mymap.removeLayer(polyMarkers[i]);
+                }
+            }
+
             $(document).ready(init);
+            $("#btnMode").click(function () {
+                mode = (mode + 1) % 2;
+                switch (mode) {
+                    case 0:
+                        clear();
+                        $("#btnMode").text("SIMPLE MODE");
+                        break;
+                    case 1:
+                        polyline = L.polyline([], {color: 'red'}).addTo(mymap);
+                        //$(".actions-nav").show();
+                        $("#btnMode").text("PATH MODE");
+                        break;    
+                }  
+            });
+
+            $("#btnPlay").click(function () {
+                var points = polyline.getLatLngs(),
+                    newPoints = [];
+                for(var i in points) {
+                    newPoints.push({latitude: points[i].lat, longitude: points[i].lng });
+                }
+                polyline.setStyle({color:'blue'})
+                simulation = window.GeolocationSimulator({coords: newPoints, speed: 40}); //160 km (slow down!)
+                simulation.start();
+                getPosition(); 
+            });
+
+            $("#btnClear").click(function () {
+                clear();
+            });
+
+            var simulation = null,
+                _timer,
+                _timerInterval = 1000, //play with these to see more infrequent results (>= 1000)
+                _update = 0;
+
+            function getPosition() {
+                    //if geolocation is available, proceed
+                    if ('geolocation' in navigator) {
+                        var options = {
+                            enableHighAccuracy: true,
+                            timeout: Infinity,
+                            maximumAge: 0
+                        };
+                        //get location
+                        navigator.geolocation.getCurrentPosition(newPosition, geoError, options);
+
+                        //lets keep getting it to see where this fella goes
+                        _timer = setTimeout(getPosition, _timerInterval); 
+                    }
+                }
+
+                //handle the geolocation response obj
+                function newPosition(data) {
+                    _update++; 
+
+                    var coords = data.coords; 
+
+                    if(mymap) {
+                        setPosition(coords.latitude, coords.longitude);
+                        sendLocation(coords.latitude, coords.longitude);
+                    }
+                }
+
+                //handle geolocation errors (there won't be any!)
+                function geoError(error) {
+                    console.log(error);
+                }
+
         </script>
     </body>
 </html>

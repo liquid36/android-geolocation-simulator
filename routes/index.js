@@ -7,6 +7,8 @@ var date = new Date();
 
 /* GET home page. */
 
+var sender = require('../telnet-android');
+
 router.get('/', function(req, res, next) {
     res.sendfile('map.html', { root: path.join(__dirname, '../public') } );
 }); 
@@ -24,9 +26,9 @@ router.all('/send', function (req, res, next){
         return;
     }
 
-    var sender = require('../telnet-android');
     sender.send(parseFloat(lat),parseFloat(lng));
-    res.json({"status": "ok"});
+    
+    res.json({"status" : "ok"});
 
 })
 
