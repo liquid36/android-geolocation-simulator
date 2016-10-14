@@ -26,28 +26,40 @@ function AdbSendGeoFix () {
         console.log("Sending geo fix to " + self.host + ":" + self.port);
         var fase = 0;
         var client = connect.connect(self.port, self.host);
+        try {
+            client.on('data', function(data) {
+                //console.log('Data is: ' + data); 
+                if (fase == 0) { 
+                    client.write("auth " + self.auth +  " \n");
+                    fase = 1;
+                } else if (fase == 1) {
+                    var isNotMac = !(/^darwin/.test(process.platform));
 
-        client.on('data', function(data) {
-            //console.log('' + data); 
-            if (fase == 0) { 
-                client.write("auth " + self.auth +  " \n");
-                fase = 1;
-            } else if (fase == 1) {
-                var s_lat = ('' + lat).replace(".",",");
-                var s_lng = ('' + lng).replace(".",","); 
-                var cmd = "geo fix " + s_lng + " " +  s_lat + "\n"; 
-                client.write(cmd);
-                fase = 2;
-            } else if (fase == 2) {
-                fase = 3;  
-                client.write("exit\n");
-            }
-            
-        }).on('connect', function() {
-            
-        }).on('end', function() { 
-
-        });
+                    var s_lat = ('' + lat);
+                    var s_lng = ('' + lng); 
+                    if(isNotMac) {
+                        s_lat = s_lat.replace(".",",");
+                        s_lng = s_lng.replace(".",","); 
+                    }
+                    var cmd = "geo fix " + s_lng + " " +  s_lat + "\n"; 
+                    console.log("Executing: " + cmd); 
+                    client.write(cmd);
+                    fase = 2;
+                } else if (fase == 2) {
+                    fase = 3;  
+                    client.write("exit\n");
+                }
+                
+            }).on('connect', function() {
+                console.log("Connected success");
+            }).on('end', function() { 
+                console.log("Connected ended");
+            }).on('error', function(a) { 
+                console.log("Connected error: ", a);
+            });
+        } catch (ex) {
+            console.log("Exception catched: " + ex);
+        }
 
     }
 
