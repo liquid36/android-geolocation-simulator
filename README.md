@@ -1,19 +1,19 @@
-# android-geolocation-simulator
-An nodeJS server to push Locations to an android emulator.  
+# Android Geolocation Simulator
+A NodeJS server that push locations to the android emulator.  
 
-## How to use
+## Get started
 
 ```sh
 npm install
 npm start
 ```
 
-Then, go to your browser and surf to localhost:3000
-Click on the map, an voula! The android emulator has changed his location.
+Then, go to your browser and browse to http://localhost:3000
+Click on the map, an voila! The android emulator has changed his location.
 
 ## Configuration
 
-By defualt, the serve use localhost:5554 address to connect with the emulator. Hoever, it's necesary the auth token in order to speak with the adb shell. So, there is a config.json file to set the configuration.
+By defualt, the serve use localhost:5554 address to connect with the emulator. However, it's necesary to set the auth token in order to speak with the adb shell. So, there is a ```config.json``` file to set the that configuration.
 
 ```sh
 {
@@ -22,6 +22,8 @@ By defualt, the serve use localhost:5554 address to connect with the emulator. H
 	"host" : "localhost"
 }
 ```
+
+The emulator auth token can be founded at ```$HOME/.emulator_console_auth_token```
 
 ## Mode
 
