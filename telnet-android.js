@@ -1,29 +1,37 @@
 var connect = require('net');
+var fs = require('fs');
+var path = require('path');
 
 function AdbSendGeoFix () {
     var self  = this;
-    var fs = require('fs');
-    var config;
+    var auth = undefined; 
 
-    try {
-        var txt = fs.readFileSync('config.json', 'utf8'); 
-        config = JSON.parse(txt);
-    } catch (e) { 
-        config = {};
-    } 
+    function getUserHome() {
+        return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+    }
 
-    console.log(config);    
+    console.log(getUserHome());
 
-    self.auth = config.auth || "8iBmnkSx1Lt4shhV";
+    var argv = require('minimist')(process.argv.slice(2));
+    try {  
+        auth = '' + fs.readFileSync(path.join(getUserHome(),".emulator_console_auth_token"));
+        console.log("Auth token found: " + auth);
+    } catch (e) {  
+        console.log("No Auth token found");
+    }      
 
-    self.host = config.host || "localhost";
+    self.auth = argv.auth || auth;
 
-    self.port = config.port || 5554;
+    self.host = argv.host || "localhost";
+
+    self.port = argv.port || 5554;
 
     self.onEnd = undefined ; 
 
+    console.log("Android emulator config: Host: " + self.host + ":" + self.port + " Auth: " + self.auth);
+
     self.send  =  function (lat,lng) {
-        console.log("Sending geo fix to " + self.host + ":" + self.port);
+        //console.log("Sending geo fix to " + self.host + ":" + self.port + " Auth: " + self.auth);
         var fase = 0;
         var client = connect.connect(self.port, self.host);
         try {

@@ -127,7 +127,7 @@
                     newPoints.push({latitude: points[i].lat, longitude: points[i].lng });
                 }
                 polyline.setStyle({color:'blue'})
-                simulation = window.GeolocationSimulator({coords: newPoints, speed: 40}); //160 km (slow down!)
+                simulation = window.GeolocationSimulator({coords: newPoints, speed: 100}); //160 km (slow down!)
                 simulation.start();
                 getPosition(); 
             });

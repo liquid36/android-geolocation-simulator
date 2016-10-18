@@ -13,19 +13,21 @@ Click on the map, an voila! The android emulator has changed his location.
 
 ## Configuration
 
-By defualt, the serve use localhost:5554 address to connect with the emulator. However, it's necesary to set the auth token in order to speak with the adb shell. So, there is a ```config.json``` file to set the that configuration.
+By defualt, the serve use localhost:5554 address to connect with the emulator. 
+However, it's necesary to set the auth token in order to speak with the adb shell. 
+Automatically, the server look at ```$HOME/.emulator_console_auth_token```, but you can set some 
+command lines argument to configurate the server:
 
-```sh
-{
-	"auth" : "8iBmnkSx1Lt4shhV",
-	"port" : 5554,
-	"host" : "localhost"
-}
+```sh 
+	node bin/simulator --host=emulator_host --port=emulator_port --auth=mulator_auth_code 
 ```
-
-The emulator auth token can be founded at ```$HOME/.emulator_console_auth_token```
 
 ## Mode
 
- - Simple Mode: Click on map and app push location to emulator.
+ - Simple Mode: Click on map and server push location to emulator.
+
+![Simple Mode](/screenshot/simple_mode.png?raw=true "Simple Mode")
+
  - Path Mode: Click several locations on map, then press play and you can see how your location will change following the path create.  
+
+![Path Mode](/screenshot/path_mode.png?raw=true "Path Mode")
