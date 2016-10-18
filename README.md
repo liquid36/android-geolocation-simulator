@@ -8,12 +8,13 @@ npm install
 npm start
 ```
 
-Then, go to your browser and browse to http://localhost:3000
+That is it! Just browse to http://localhost:3000
+
 Click on the map, an voila! The android emulator has changed his location.
 
 ## Configuration
 
-By defualt, the serve use localhost:5554 address to connect with the emulator. 
+By defualt, the server use localhost:5554 address to connect with the android emulator. 
 However, it's necesary to set the auth token in order to speak with the adb shell. 
 Automatically, the server look at ```$HOME/.emulator_console_auth_token```, but you can set some 
 command lines argument to configurate the server:

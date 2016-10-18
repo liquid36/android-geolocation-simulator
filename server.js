@@ -4,7 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var http = require('http')
+var http = require('http');
+ var open = require('open');
 
 
 var routes = require('./routes/index'); 
@@ -63,3 +64,5 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
  
+
+open('http://localhost:3000');
