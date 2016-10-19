@@ -56,10 +56,35 @@ html, body {
   background-color: #999;
 }
 
+.btn-round { 
+    background-color: green;
+    border: none;
+    border-radius: 30px;
+    padding: 5px 5px;
+    width: 35px;
+    text-align: center; 
+}
+
+.speed {
+  vertical-align: 5px;
+}
+
+.btn-round:hover,
+.btn-round:active {
+  background-color: lawngreen;
+}
+
 .actions-nav {
   position: fixed;
   z-index: 1;
   right: 0px;
   bottom: 15px;
+}
 
+.actions-left {
+  background-color: white;
+  position: fixed;
+  z-index: 1;
+  left: 0px;
+  bottom: 15px;
 }

@@ -27,6 +27,15 @@
                 <i class="material-icons">&#xE14C;</i>
             </button> 
         </div>
+        <div class="actions-left" style="display:none;">
+            <button class="btn-round" id="btnMinus">
+                <i class="material-icons">&#xE15B;</i>
+            </button> 
+            <span class="speed">40Km/h</span>
+            <button class="btn-round" id="btnPlus">
+                <i class="material-icons">&#xE145;</i>
+            </button> 
+        </div>
         <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
         <script src="jquery.min.js"></script>
         <script src="geolocation-simulator.js"></script>
@@ -36,7 +45,8 @@
                 mode = 0,
                 polyline = null,
                 polyMarkers = [],
-                redIcon = L.icon({iconUrl: 'img/red-marker.png',iconAnchor:[10,31]});
+                redIcon = L.icon({iconUrl: 'img/red-marker.png',iconAnchor:[10,31]}),
+                speed = 40;
 
 
 
@@ -116,6 +126,7 @@
                         polyline = L.polyline([], {color: 'red'}).addTo(mymap);
                         //$(".actions-nav").show();
                         $("#btnMode").text("PATH MODE");
+                        $(".actions-left").show();
                         break;    
                 }  
             });
@@ -127,13 +138,23 @@
                     newPoints.push({latitude: points[i].lat, longitude: points[i].lng });
                 }
                 polyline.setStyle({color:'blue'})
-                simulation = window.GeolocationSimulator({coords: newPoints, speed: 100}); //160 km (slow down!)
+                simulation = window.GeolocationSimulator({coords: newPoints, speed: speed});
                 simulation.start();
                 getPosition(); 
             });
 
             $("#btnClear").click(function () {
                 clear();
+            });
+
+            $("#btnMinus").click(function () {
+                speed -= 5;
+                $(".speed").text(speed + "km/s");
+            });
+
+            $("#btnPlus").click(function () {
+                speed += 5;
+                $(".speed").text(speed + "km/s");
             });
 
             var simulation = null,
