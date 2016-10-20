@@ -97,7 +97,7 @@
                     dataType:'json',
                     data: data,
                     success: function(data){
-                        console.log(data);
+                        //console.log(data);
                     }
                 });
             }
@@ -150,11 +150,17 @@
             $("#btnMinus").click(function () {
                 speed -= 5;
                 $(".speed").text(speed + "km/s");
+                if (simulation) {
+                    simulation.setSpeed(speed);
+                }    
             });
 
             $("#btnPlus").click(function () {
                 speed += 5;
                 $(".speed").text(speed + "km/s");
+                if (simulation) {
+                    simulation.setSpeed(speed);
+                }    
             });
 
             var simulation = null,

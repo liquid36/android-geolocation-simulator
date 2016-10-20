@@ -46,7 +46,25 @@
             _stop = true;
         }
 
+        self.setSpeed = function (s) {
+            _speed = s / SECONDS_IN_HOUR;
+            refresStep();
+        }
+
         //private functions
+        function refresStep() {
+            var nextCoord = _coords[_index + 1];
+            var currentCoord = _current.coords;
+            var deltaLat = (nextCoord.latitude - currentCoord.latitude) * KM_IN_DEGREE,
+                deltaLon = (nextCoord.longitude - currentCoord.longitude) * KM_IN_DEGREE; 
+
+                var deltaDist = Math.sqrt((deltaLat * deltaLat) + (deltaLon * deltaLon));
+                var deltaSeconds = Math.floor(deltaDist / _speed);
+                _rate.latitude = deltaLat / deltaSeconds / KM_IN_DEGREE;
+                _rate.longitude = deltaLon / deltaSeconds / KM_IN_DEGREE;
+                _numSteps = deltaSeconds;
+                _currentStep = 0;
+        }
 
         //advance to next coordinate in array
         function nextCoord() {
