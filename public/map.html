@@ -14,7 +14,7 @@
             </div>  
             <div class="nav-right">
                 <button class="btn" id="btnMode">
-                    SIMPLE MODE
+                    Change to PATH MODE
                 </button>    
             </div>          
         </nav>
@@ -31,7 +31,7 @@
             <button class="btn-round" id="btnMinus">
                 <i class="material-icons">&#xE15B;</i>
             </button> 
-            <span class="speed">40Km/h</span>
+            <span class="speed">40 km/h</span>
             <button class="btn-round" id="btnPlus">
                 <i class="material-icons">&#xE145;</i>
             </button> 
@@ -120,12 +120,12 @@
                 switch (mode) {
                     case 0:
                         clear();
-                        $("#btnMode").text("SIMPLE MODE");
+                        $("#btnMode").text("Change to PATH MODE");
                         break;
                     case 1:
                         polyline = L.polyline([], {color: 'red'}).addTo(mymap);
                         //$(".actions-nav").show();
-                        $("#btnMode").text("PATH MODE");
+                        $("#btnMode").text("Change SIMPLE MODE");
                         $(".actions-left").show();
                         break;    
                 }  
@@ -149,7 +149,7 @@
 
             $("#btnMinus").click(function () {
                 speed -= 5;
-                $(".speed").text(speed + "km/s");
+                $(".speed").text(speed + " km/h");
                 if (simulation) {
                     simulation.setSpeed(speed);
                 }    
@@ -157,7 +157,7 @@
 
             $("#btnPlus").click(function () {
                 speed += 5;
-                $(".speed").text(speed + "km/s");
+                $(".speed").text(speed + " km/h");
                 if (simulation) {
                     simulation.setSpeed(speed);
                 }    
