@@ -14,7 +14,9 @@ router.get('/', function(req, res, next) {
 }); 
 
 router.all('/send', function (req, res, next){
-    var lat,lng;
+    var lat, lng;
+    var config = req.body.config;
+
     if (req.body.lat && req.body.lng) {
         lat = req.body.lat;
         lng = req.body.lng;
@@ -24,9 +26,34 @@ router.all('/send', function (req, res, next){
     } else{
         res.json({"status": "error"});
         return;
-    }
+    } 
+    if (config && config.android === 'true') {
+        sender.send(parseFloat(lat),parseFloat(lng));
+    } else {
+        let headers = {};
+        headers[config.key] = config.value;
 
-    sender.send(parseFloat(lat),parseFloat(lng));
+        console.log(config.host)
+        let axios = require('axios');
+        axios({
+            method: 'POST',
+            url: config.host,
+            data: {
+                changos: [
+                    {
+                        latitude: parseFloat(lat),
+                        longitude: parseFloat(lng)
+                    }
+                ]
+            },
+            headers: headers, 
+          }).then((resp) => {
+              console.log(resp);
+          }).catch((err) => {
+              console.log(err);
+          });
+
+    }
     
     res.json({"status" : "ok"});
 

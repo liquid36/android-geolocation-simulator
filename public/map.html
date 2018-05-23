@@ -16,6 +16,9 @@
                 <button class="btn" id="btnMode">
                     Change to PATH MODE
                 </button>    
+                <button class="btn" id="btnConfig">
+                    Configuration
+                </button>    
             </div>          
         </nav>
         <div id="map"></div>
@@ -36,6 +39,20 @@
                 <i class="material-icons">&#xE145;</i>
             </button> 
         </div>
+        <div id="configuration" class="config-view" style="display: none;">
+            <label for="fname">Host</label>
+            <input type="text" id="host" value="http://localhost:8080/api/conductor/coordenadas" >
+            <label for="fname">Header name</label>
+            <input type="text" id="header-key" value="Authorization">
+            <label for="fname">Header value</label>
+            <input type="text" id="header-value" value="Bearer ">
+            <button class="btn" id="btnCFGAccept">
+                Aceptar
+            </button> 
+            <button class="btn" id="btnCFGCancel">
+                Cancelar
+            </button> 
+        </div>
         <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
         <script src="jquery.min.js"></script>
         <script src="geolocation-simulator.js"></script>
@@ -48,7 +65,11 @@
                 redIcon = L.icon({iconUrl: 'img/red-marker.png',iconAnchor:[10,31]}),
                 speed = 40;
 
-
+            var config = {
+                android: true,
+                host: '',
+                auth: null
+            }
 
 
             function setPosition(lat,lng) {
@@ -89,12 +110,13 @@
             function sendLocation(lat,lng) {
                 var data = {
                     lat : lat,
-                    lng : lng
+                    lng : lng,
+                    config: config
                 }; 
                 $.ajax({
                     url: "/send",
                     type: "POST",
-                    dataType:'json',
+                    dataType:'aplication/json',
                     data: data,
                     success: function(data){
                         //console.log(data);
@@ -130,6 +152,26 @@
                         break;    
                 }  
             });
+
+            $("#btnConfig").click(function () {
+                $('#configuration').show();
+            });
+
+            $("#btnCFGAccept").click(function () {
+                config = {
+                    android: false,
+                    host: $('#host').val(),
+                    key: $('#header-key').val(),
+                    value: $('#header-value').val()
+                }
+                $('#configuration').hide();
+            });
+
+            $("#btnCFGCancel").click(function () {
+                $('#configuration').hide();
+            });
+
+            
 
             $("#btnPlay").click(function () {
                 var points = polyline.getLatLngs(),
