@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": false,
   "scripts": {
-    "start": "node ./bin/simulator"
+    "start": "node bin/open && nodemon -e js,html ./bin/simulator"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -14,5 +14,8 @@
     "morgan": "~1.7.0",
     "open": "0.0.5",
     "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
   }
 }
