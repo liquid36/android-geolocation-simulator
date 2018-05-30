@@ -32,8 +32,6 @@ router.all('/send', function (req, res, next){
     } else {
         let headers = {};
         headers[config.key] = config.value;
-
-        console.log(config.host)
         let axios = require('axios');
         axios({
             method: 'POST',
@@ -48,9 +46,9 @@ router.all('/send', function (req, res, next){
             },
             headers: headers, 
           }).then((resp) => {
-              console.log(resp);
+            //   console.log(resp);
           }).catch((err) => {
-              console.log(err);
+            //   console.log(err);
           });
 
     }
